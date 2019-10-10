@@ -1,0 +1,30 @@
+<div class="row">
+    <div class="col-8">
+        <div *ngIf="loans">
+            <h5 class="text-muted">Check your account details</h5>
+            <form [formGroup]="form" (ngSubmit)="onGetLoanDetails()">
+                <div class="form-inline p-0">
+                    <div class="input-group col-6 pl-0">
+                        <select class="form-control" formControlName="loanNo">
+                            <option value="">- Select -</option>
+                            <option *ngFor="let loan of loans" [value]="loan.loanAccountNo">{{loan.loanAccountNo}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <input type="submit" class="btn btn-dark" value="Submit" [disabled]="!form.valid">
+                    </div>
+                </div>
+            </form>
+
+            <div *ngIf="loanDetails">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" *ngFor="let loanDetail of loanDetails">{{loanDetail}}</li>
+                </ul>
+            </div>
+        </div>
+        <div *ngIf="!loans">
+            Loans are not available
+        </div>
+    </div>
+</div>

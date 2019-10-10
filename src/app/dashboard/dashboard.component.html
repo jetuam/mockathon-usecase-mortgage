@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-12">
+        <button class="btn btn-white border-orange" routerLink="/applyLoan">APPLY LOAN</button>
+    </div>
+    <div class="col-12 mt-5">
+        <div class="row">
+            <div class="col-3 pr-0 border-right">
+                <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="profile-tab" data-toggle="pill" href="#profile" role="tab"
+                        aria-controls="profile" aria-selected="false">Profile</a>
+                    <a class="nav-link" id="loan-tab" data-toggle="pill" href="#loan" role="tab" aria-controls="loan"
+                        aria-selected="true">Loans</a>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        Profile</div>
+                    <div class="tab-pane fade" id="loan" role="tabpanel" aria-labelledby="loan-tab">
+                        <app-loans [loans]="loans"></app-loans>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
