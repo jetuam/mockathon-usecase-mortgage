@@ -14,6 +14,7 @@ export class LoansComponent implements OnInit {
   form: FormGroup;
   loanNo: number;
   loanDetails: LoanDetail;
+  objectKeys = Object.keys;
   @Input() loans: Loan[] = [];
 
   constructor(

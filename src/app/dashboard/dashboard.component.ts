@@ -11,7 +11,7 @@ declare var $: any;
 export class DashboardComponent implements OnInit {
 
   activeTab: String;
-  loans: any;
+  loans: any = [];
   constructor(
     private loginService: LoginService
   ) { }

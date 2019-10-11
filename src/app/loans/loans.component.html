@@ -7,7 +7,7 @@
                     <div class="input-group col-6 pl-0">
                         <select class="form-control" formControlName="loanNo">
                             <option value="">- Select -</option>
-                            <option *ngFor="let loan of loans" [value]="loan.loanAccountNo">{{loan.loanAccountNo}}
+                            <option *ngFor="let loan of loans" [value]="loan.loanId">{{loan.loanAccountNo}}
                             </option>
                         </select>
                     </div>
@@ -18,9 +18,19 @@
             </form>
 
             <div *ngIf="loanDetails">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item" *ngFor="let loanDetail of loanDetails">{{loanDetail}}</li>
-                </ul>
+                <h3 class="text-muted h4 my-4">Loan Details</h3>
+                <table class="table border">
+                    <thead>
+                        <tr>
+                            <th *ngFor="let loanDetail of objectKeys(loanDetails)">{{loanDetail}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td *ngFor="let loanDetail of loanDetails">{{loanDetails[loanDetail]}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div *ngIf="!loans">

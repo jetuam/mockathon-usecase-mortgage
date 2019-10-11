@@ -4,72 +4,17 @@
         <form [formGroup]="loanForm" (ngSubmit)="applyLoan()">
             <div class="form-group form-inline">
                 <label class="form-control mr-2"><input type="radio" name="loanType" formControlName="loanType"
-                        (click)="chooseLoanType('Mortage')" value="Mortage">
+                        value="Mortage">
                     Mortage</label>
                 <label class="form-control mr-2"><input type="radio" name="loanType" formControlName="loanType"
-                        (click)="chooseLoanType('bt')" value="Balance Transfer">
+                        value="Balance Transfer">
                     Balance
                     Transfer</label>
             </div>
-            <!-- <div *ngIf="loanForm.get('loanType').touched && loanForm.get('loanType').value == 'Mortage'"> -->
-            <div *ngIf="showLoanApplicationPanel">
+            <div *ngIf="loanForm.get('loanType').value === 'Mortage'">
                 <div class="row">
-                    <div class="col-12 col-md-6" formGroupName="customer">
-                        <h4 class="mb-3 text-orange">Personal Details</h4>
-                        <div class="form-group">
-                            <label>Customer Id</label>
-                            <input type="text" class="form-control" formControlName="customerId" [disabled]="true">
-                        </div>
-                        <div class="form-group">
-                            <label>City</label>
-                            <select class="form-control" formControlName="city">
-                                <option value="">- Select -</option>
-                                <option *ngFor="let cityName of cities">{{cityName}}</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>First Name</label>
-                            <input type="text" class="form-control" formControlName="firstName">
-                        </div>
-                        <div class="form-group">
-                            <label>Middle Name</label>
-                            <input type="text" class="form-control" formControlName="middleName">
-                        </div>
-                        <div class="form-group">
-                            <label>Last Name</label>
-                            <input type="text" class="form-control" formControlName="lastName">
-                        </div>
-                        <div class="form-group">
-                            <label>Email Id</label>
-                            <input type="text" class="form-control" formControlName="emailId">
-                        </div>
-                        <div class="form-group">
-                            <label>Mobile No</label>
-                            <input type="text" class="form-control" formControlName="mobileNo">
-                        </div>
-                        <div class="form-group">
-                            <label>DOB</label>
-                            <input type="date" class="form-control" formControlName="dob">
-                        </div>
-                        <div class="form-group">
-                            <label>Pan Number</label>
-                            <input type="text" class="form-control" formControlName="panNumber">
-                        </div>
-                        <div class="form-group">
-                            <label>PinCode</label>
-                            <input type="text" class="form-control" formControlName="pinCode">
-                        </div>
-                        <div class="form-group">
-                            <label>Employement Type</label>
-                            <select class="form-control" formControlName="customerType" [(ngModel)]="customerType">
-                                <option value="">- Select -</option>
-                                <option value="Salaried Employee">Salaried Employee</option>
-                                <option value="Self Employee">Self Employee</option>
-                            </select>
-                        </div>
-                    </div>
                     <div class="col-12 col-md-6" formGroupName="loan">
-                        <h4 class="mb-3 text-orange">Emi Calculation</h4>
+                        <h4 class="mt-4 mb-3 text-orange">EMI Eligibility Check</h4>
                         <div class="form-group">
                             <label>Loan Amount</label>
                             <input type="text" class="form-control" formControlName="loanAmount">
@@ -82,65 +27,135 @@
                             <label>Tenure</label>
                             <input type="text" class="form-control" formControlName="tenure">
                         </div>
-                    </div>
-                    <div class="col-12 col-md-6" *ngIf="customerType.touched && customerType == 'Salaried Employee'"
-                        formGroupName="salariedEmployee">
-                        <h4 class="mb-3 text-orange">Employement Type</h4>
                         <div class="form-group">
-                            <label>Designation</label>
-                            <input type="text" class="form-control" formControlName="designation">
+                            <label>EMI</label>
+                            <input type="text" class="form-control" formControlName="emi">
                         </div>
                         <div class="form-group">
-                            <label>Monthly Salary</label>
-                            <input type="text" class="form-control" formControlName="monthlySalary">
-                        </div>
-                        <div class="form-group">
-                            <label>Official Email Id</label>
-                            <input type="text" class="form-control" formControlName="officialEmailId">
-                        </div>
-                        <div class="form-group">
-                            <label>Official Phone Number</label>
-                            <input type="text" class="form-control" formControlName="officialPhoneNumber">
-                        </div>
-                        <div class="form-group">
-                            <label>Organization Name</label>
-                            <input type="text" class="form-control" formControlName="organizationName">
-                        </div>
-                        <div class="form-group">
-                            <label>Salaried Employee Id</label>
-                            <input type="text" class="form-control" formControlName="salariedEmployeeId">
+                            <input type="button" class="btn btn-primary btn-lg" value="Check" (click)="calculateEMI()"
+                                [disabled]="loanForm.get('loan.loanAmount').value=='' || loanForm.get('loan.tenure').value==''">
                         </div>
                     </div>
-                    <div class="col-12 col-md-6" *ngIf="customerType.touched && customerType == 'Self Employee'"
-                        formGroupName="selfEmployee">
-                        <h4 class="mb-3 text-orange">Employement Type</h4>
-                        <div class="form-group">
-                            <label>Latest Turn Over</label>
-                            <input type="text" class="form-control" formControlName="latestTurnover">
+                    <!-- <div class="col-12 col-md-6">
+                        <p-chart class="d-block" style="width: 100%; min-width: 500px;" type="doughnut"
+                            [data]="chartData"></p-chart>
+                    </div> -->
+                    <div class="col-12" *ngIf="eligible">
+                        <div class="row">
+                            <div class="col-12 col-md-6" formGroupName="customer">
+                                <h4 class="mb-3 text-orange">Personal Details</h4>
+                                <div class="form-group">
+                                    <label>Customer Id</label>
+                                    <input type="text" class="form-control" formControlName="customerId">
+                                </div>
+                                <div class="form-group">
+                                    <label>City</label>
+                                    <select class="form-control" formControlName="city">
+                                        <option value="">- Select -</option>
+                                        <option *ngFor="let cityName of cities">{{cityName}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" class="form-control" formControlName="firstName">
+                                </div>
+                                <div class="form-group">
+                                    <label>Middle Name</label>
+                                    <input type="text" class="form-control" formControlName="middleName">
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" class="form-control" formControlName="lastName">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Id</label>
+                                    <input type="text" class="form-control" formControlName="emailId">
+                                </div>
+                                <div class="form-group">
+                                    <label>Mobile No</label>
+                                    <input type="text" class="form-control" formControlName="mobileNo">
+                                </div>
+                                <div class="form-group">
+                                    <label>DOB</label>
+                                    <input type="date" class="form-control" formControlName="dob">
+                                </div>
+                                <div class="form-group">
+                                    <label>Pan Number</label>
+                                    <input type="text" class="form-control" formControlName="panNumber">
+                                </div>
+                                <div class="form-group">
+                                    <label>PinCode</label>
+                                    <input type="text" class="form-control" formControlName="pinCode">
+                                </div>
+                                <div class="form-group">
+                                    <label>Employement Type</label>
+                                    <select class="form-control" formControlName="customerType">
+                                        <option value="">- Select -</option>
+                                        <option value="Salaried Employee">Salaried Employee</option>
+                                        <option value="Self Employee">Self Employee</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6"
+                                *ngIf="loanForm.get('customer.customerType').value == 'Salaried Employee'"
+                                formGroupName="salariedEmployee">
+                                <h4 class="my-3 text-orange">Employement Type</h4>
+                                <div class="form-group">
+                                    <label>Designation</label>
+                                    <input type="text" class="form-control" formControlName="designation">
+                                </div>
+                                <div class="form-group">
+                                    <label>Monthly Salary</label>
+                                    <input type="text" class="form-control" formControlName="monthlySalary">
+                                </div>
+                                <div class="form-group">
+                                    <label>Official Email Id</label>
+                                    <input type="text" class="form-control" formControlName="officialEmailId">
+                                </div>
+                                <div class="form-group">
+                                    <label>Official Phone Number</label>
+                                    <input type="text" class="form-control" formControlName="officialPhoneNumber">
+                                </div>
+                                <div class="form-group">
+                                    <label>Organization Name</label>
+                                    <input type="text" class="form-control" formControlName="organizationName">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6"
+                                *ngIf="loanForm.get('customer.customerType').value == 'Self Employee'"
+                                formGroupName="selfEmployee">
+                                <h4 class="my-3 text-orange">Employement Type</h4>
+                                <div class="form-group">
+                                    <label>Latest Turn Over</label>
+                                    <input type="text" class="form-control" formControlName="latestTurnover">
+                                </div>
+                                <div class="form-group">
+                                    <label>Name Of Business</label>
+                                    <input type="text" class="form-control" formControlName="nameofBusiness">
+                                </div>
+                                <div class="form-group">
+                                    <label>Nature Of Business</label>
+                                    <input type="text" class="form-control" formControlName="natureOfBusiness">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <input type="submit" class="btn btn-primary btn-lg" value="Apply Loan"
+                                        [disabled]="!loanForm.valid">
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Name Of Business</label>
-                            <input type="text" class="form-control" formControlName="nameofBusiness">
-                        </div>
-                        <div class="form-group">
-                            <label>Nature Of Business</label>
-                            <input type="text" class="form-control" formControlName="natureOfBusiness">
-                        </div>
-                        <div class="form-group">
-                            <label>Self Employee Id</label>
-                            <input type="text" class="form-control" formControlName="selfEmployeeId">
-                        </div>
+                    </div>
+                    <div class="m-2" *ngIf="!eligible && displayEligible">
+                        <app-alert type="danger" message="Sorry, Loan is not applicable for your loan amount">
+                        </app-alert>
                     </div>
                 </div>
             </div>
-            <div *ngIf="!showLoanApplicationPanel">
-                <!-- <div *ngIf="loanForm.get('loanType').touched && loanForm.get('loanType').valid && loanForm.get('loanType').value != 'Mortage'"> -->
+            <div *ngIf="loanForm.get('loanType').value !== 'Mortage'">
                 <app-alert type="danger"
                     [message]="loanForm.get('loanType').value + ' is not available, please check with customer care'">
                 </app-alert>
-            </div>
-            <div class="form-group">
-                <input type="submit" class="btn btn-dark" value="Submit">
             </div>
         </form>
     </div>

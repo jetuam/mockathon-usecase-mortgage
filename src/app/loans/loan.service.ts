@@ -14,7 +14,7 @@ export class LoanService {
   ) { }
 
   getLoanDetails(loanId) {
-    return this.http.get<LoanDetail>(`${environment.apiDomainUrl}/loan/${loanId}`);
+    return this.http.get<LoanDetail>(`${environment.apiDomainUrl}/loans/${loanId}`);
   }
 
   calculateEmi(calculationDetail) {

@@ -15,9 +15,6 @@ const routes: Routes = [
   },
   {
     path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]
-  },
-  {
-    path: 'applyLoan', component: ApplyLoanComponent, canActivate: [AuthGuard]
   }
 ];
 

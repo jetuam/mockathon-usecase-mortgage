@@ -1,23 +1,22 @@
 <div class="row">
-    <div class="col-12">
-        <button class="btn btn-white border-orange" routerLink="/applyLoan">APPLY LOAN</button>
-    </div>
+    <app-banner image="assets/images/small-banner.jpg" alt="Banner Image"></app-banner>
     <div class="col-12 mt-5">
         <div class="row">
             <div class="col-3 pr-0 border-right">
                 <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link active" id="profile-tab" data-toggle="pill" href="#profile" role="tab"
-                        aria-controls="profile" aria-selected="false">Profile</a>
-                    <a class="nav-link" id="loan-tab" data-toggle="pill" href="#loan" role="tab" aria-controls="loan"
-                        aria-selected="true">Loans</a>
+                    <a class="nav-link active" id="loan-tab" data-toggle="pill" href="#loan" role="tab"
+                        aria-controls="loan" aria-selected="true">Loan Details</a>
+                    <a class="nav-link" id="loan-tab" data-toggle="pill" href="#applyLoan" role="tab"
+                        aria-controls="loan" aria-selected="true">Apply Loan</a>
                 </div>
             </div>
             <div class="col-9">
                 <div class="tab-content" id="v-pills-tabContent">
-                    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                        Profile</div>
-                    <div class="tab-pane fade" id="loan" role="tabpanel" aria-labelledby="loan-tab">
+                    <div class="tab-pane fade show active" id="loan" role="tabpanel" aria-labelledby="loan-tab">
                         <app-loans [loans]="loans"></app-loans>
+                    </div>
+                    <div class="tab-pane fade" id="applyLoan" role="tabpanel" aria-labelledby="loan-tab">
+                        <app-apply-loan></app-apply-loan>
                     </div>
                 </div>
             </div>

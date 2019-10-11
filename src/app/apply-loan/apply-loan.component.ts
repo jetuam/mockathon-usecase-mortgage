@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApplyLoanService } from './apply-loan.service';
+import { LoginService } from '../login/login.service';
 
 @Component({
   selector: 'app-apply-loan',
@@ -11,6 +12,9 @@ export class ApplyLoanComponent implements OnInit {
 
   loanForm: FormGroup;
   showLoanApplicationPanel: boolean = true;
+  eligible: boolean = false;
+  displayEligible: boolean = false;
+  chartData = {};
   cities: any = [
     'Bangalore',
     'Chennai',
@@ -19,17 +23,53 @@ export class ApplyLoanComponent implements OnInit {
     'Mumbai',
     'Delhi'
   ];
+  customerId: number;
   constructor(
     private fb: FormBuilder,
-    private loan: ApplyLoanService
+    private loan: ApplyLoanService,
+    private loginService: LoginService
   ) { }
 
   ngOnInit() {
+
+    // var principal = parseFloat(500000);
+    // var interest = parseFloat(10) / 100 / 12;
+    // var payments = parseFloat(5) * 12;
+
+    // var x = Math.pow(1 + interest, payments);
+    // var monthly = (principal * x * interest) / (x - 1);
+    // let toalInterest = ((monthly * payments) - principal).toFixed(2);
+    // console.log(toalInterest);
+
+    // this.chartData = {
+    //   labels: [],
+    //   datasets: [
+    //     {
+    //       data: [100, 50, 200],
+    //       backgroundColor: [
+    //         "#FF6384",
+    //         "#36A2EB",
+    //         "#FFCE56"
+    //       ],
+    //       hoverBackgroundColor: [
+    //         "#FF6384",
+    //         "#36A2EB",
+    //         "#FFCE56"
+    //       ]
+    //     }]
+    // };
+
+    let user = this.loginService.getUser;
+    if (user) {
+      this.customerId = user.loanDetails[0].customerId;
+      this.customerId++;
+    }
+
     this.loanForm = this.fb.group({
       loanType: ['Mortage'],
       customer: this.fb.group({
         city: ['', Validators.required],
-        customerId: [''],
+        customerId: [{ value: this.customerId, disabled: true }],
         customerType: [''],
         dob: [''],
         emailId: ['', Validators.required],
@@ -41,10 +81,9 @@ export class ApplyLoanComponent implements OnInit {
         pinCode: ['', Validators.required]
       }),
       loan: this.fb.group({
-        emi: [''],
+        emi: [{ value: '', disabled: true }],
         loanAmount: [''],
-        loanId: [''],
-        rateOfInterest: [''],
+        rateOfInterest: [{ value: 10, disabled: true }],
         tenure: ['']
       }),
       salariedEmployee: this.fb.group({
@@ -52,32 +91,45 @@ export class ApplyLoanComponent implements OnInit {
         monthlySalary: [''],
         officialEmailId: [''],
         officialPhoneNumber: [''],
-        organizationName: [''],
-        salariedEmployeeId: ['']
+        organizationName: ['']
       }),
       selfEmployee: this.fb.group({
         latestTurnover: [''],
         nameofBusiness: [''],
-        natureOfBusiness: [''],
-        selfEmployeeId: ['']
+        natureOfBusiness: ['']
       })
     });
   }
 
-  chooseLoanType(loanType) {
-    // let v = this.loanForm.get('');
-    this.showLoanApplicationPanel = this.loanForm.get('loanType').touched && loanType == 'Mortage' ? true : false;
-
-    // console.log(v);
-    // this.showLoanApplicationPanel = (this.loanForm.get('loanType').touched && this.loanForm.get('loanType').valid && loanType === 'Mortage') ? true : false;
-    // this.showLoanApplicationPanel = loanType === 'Mortage' ? true : false;
-  }
-
   applyLoan() {
-    console.log(this.loanForm.value);
-    this.loan.applyLoan(this.loanForm.value).subscribe(res => {
+    let datas = this.loanForm.value;
+    datas.loan.rateOfInterest = this.loanForm.getRawValue().loan.rateOfInterest;
+    datas.customer.customerId = this.loanForm.getRawValue().customer.customerId;
+    console.log(datas);
+    this.loan.applyLoan(datas).subscribe(res => {
+      let r: any = res;
+      if (r.statusCode == 200 || r.statusCode == 201) {
+        alert(r.message);
+      } else {
+        alert('error:' + r.message);
+      }
       console.log(res);
     })
+  }
+
+  calculateEMI() {
+    this.eligible = false;
+    this.displayEligible = false;
+    let loan = this.loanForm.value.loan;
+    loan.rateOfInterest = this.loanForm.getRawValue().loan.rateOfInterest;
+    this.loan.calculateEMI(loan).subscribe(res => {
+      this.displayEligible = true;
+      this.eligible = true;
+      let r: any = res;
+      this.loanForm.patchValue({
+        loan: { emi: r.emiAmount.toFixed(2) }
+      });
+    });
   }
 
 }

@@ -11,7 +11,11 @@ export class ApplyLoanService {
     private http: HttpClient
   ) { }
 
+  calculateEMI(params) {
+    return this.http.post(`${environment.apiDomainUrl}/emiCalculation`, params);
+  }
+
   applyLoan(loanDetails) {
-    return this.http.post(`${environment.apiDomainUrl}/loan/apply`, loanDetails);
+    return this.http.post(`${environment.apiDomainUrl}/loans`, loanDetails);
   }
 }
