@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-12">
-        <h5 class="text-muted mb-3">Choose Loan Type</h5>
+        <h4 class="text-muted mb-3">CHOOSE LOAN TYPE</h4>
         <form [formGroup]="loanForm" (ngSubmit)="applyLoan()">
             <div class="form-group form-inline">
                 <label class="form-control mr-2"><input type="radio" name="loanType" formControlName="loanType"
@@ -32,14 +32,27 @@
                             <input type="text" class="form-control" formControlName="emi">
                         </div>
                         <div class="form-group">
+                            <label>Salary</label>
+                            <input type="text" class="form-control" formControlName="salary">
+                        </div>
+                        <div class="form-group" *ngIf="loanAvail">
+                            <app-alert type="danger" message="Sorry, Loan is not applicable for your loan amount">
+                            </app-alert>
+                        </div>
+                        <div class="form-group">
                             <input type="button" class="btn btn-primary btn-lg" value="Check" (click)="calculateEMI()"
                                 [disabled]="loanForm.get('loan.loanAmount').value=='' || loanForm.get('loan.tenure').value==''">
                         </div>
                     </div>
-                    <!-- <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-6 mt-md-5">
                         <p-chart class="d-block" style="width: 100%; min-width: 500px;" type="doughnut"
-                            [data]="chartData"></p-chart>
-                    </div> -->
+                            [data]="chartData">
+                        </p-chart>
+                        <!-- <p-chart
+                            *ngIf="!(loanForm.get('loan.loanAmount').value=='' || loanForm.get('loan.tenure').value=='') && eligible"
+                            class="d-block" style="width: 100%; min-width: 500px;" type="doughnut" [data]="chartData">
+                        </p-chart> -->
+                    </div>
                     <div class="col-12" *ngIf="eligible">
                         <div class="row">
                             <div class="col-12 col-md-6" formGroupName="customer">

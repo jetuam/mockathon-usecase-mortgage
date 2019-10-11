@@ -15,6 +15,7 @@ export class ApplyLoanComponent implements OnInit {
   eligible: boolean = false;
   displayEligible: boolean = false;
   chartData = {};
+  loanAvail: boolean = false;
   cities: any = [
     'Bangalore',
     'Chennai',
@@ -31,33 +32,6 @@ export class ApplyLoanComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
-    // var principal = parseFloat(500000);
-    // var interest = parseFloat(10) / 100 / 12;
-    // var payments = parseFloat(5) * 12;
-
-    // var x = Math.pow(1 + interest, payments);
-    // var monthly = (principal * x * interest) / (x - 1);
-    // let toalInterest = ((monthly * payments) - principal).toFixed(2);
-    // console.log(toalInterest);
-
-    // this.chartData = {
-    //   labels: [],
-    //   datasets: [
-    //     {
-    //       data: [100, 50, 200],
-    //       backgroundColor: [
-    //         "#FF6384",
-    //         "#36A2EB",
-    //         "#FFCE56"
-    //       ],
-    //       hoverBackgroundColor: [
-    //         "#FF6384",
-    //         "#36A2EB",
-    //         "#FFCE56"
-    //       ]
-    //     }]
-    // };
 
     let user = this.loginService.getUser;
     if (user) {
@@ -84,7 +58,8 @@ export class ApplyLoanComponent implements OnInit {
         emi: [{ value: '', disabled: true }],
         loanAmount: [''],
         rateOfInterest: [{ value: 10, disabled: true }],
-        tenure: ['']
+        tenure: [''],
+        salary: ['']
       }),
       salariedEmployee: this.fb.group({
         designation: [''],
@@ -105,7 +80,6 @@ export class ApplyLoanComponent implements OnInit {
     let datas = this.loanForm.value;
     datas.loan.rateOfInterest = this.loanForm.getRawValue().loan.rateOfInterest;
     datas.customer.customerId = this.loanForm.getRawValue().customer.customerId;
-    console.log(datas);
     this.loan.applyLoan(datas).subscribe(res => {
       let r: any = res;
       if (r.statusCode == 200 || r.statusCode == 201) {
@@ -113,22 +87,52 @@ export class ApplyLoanComponent implements OnInit {
       } else {
         alert('error:' + r.message);
       }
-      console.log(res);
     })
   }
 
   calculateEMI() {
+    this.loanAvail = false;
     this.eligible = false;
     this.displayEligible = false;
     let loan = this.loanForm.value.loan;
     loan.rateOfInterest = this.loanForm.getRawValue().loan.rateOfInterest;
     this.loan.calculateEMI(loan).subscribe(res => {
-      this.displayEligible = true;
-      this.eligible = true;
       let r: any = res;
       this.loanForm.patchValue({
         loan: { emi: r.emiAmount.toFixed(2) }
       });
+      if ((this.loanForm.value.loan.salary * 0.5) < r.emiAmount) {
+        this.loanAvail = true;
+      } else {
+        this.loanAvail = false;
+        this.displayEligible = true;
+        this.eligible = true;
+
+        var principal = parseFloat(this.loanForm.value.loan.loanAmount);
+        var interest = parseFloat(this.loanForm.getRawValue().loan.rateOfInterest) / 100 / 12;
+        var payments = parseFloat(this.loanForm.value.loan.tenure) * 12;
+
+        var x = Math.pow(1 + interest, payments);
+        var monthly = (principal * x * interest) / (x - 1);
+        let toalInterest = ((monthly * payments) - principal).toFixed(2);
+        console.log(toalInterest);
+
+        this.chartData = {
+          labels: ['Loan Amount', 'Interest'],
+          datasets: [
+            {
+              data: [principal, toalInterest],
+              backgroundColor: [
+                "#FF6384",
+                "#36A2EB"
+              ],
+              hoverBackgroundColor: [
+                "#FF6384",
+                "#36A2EB"
+              ]
+            }]
+        };
+      }
     });
   }
 

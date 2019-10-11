@@ -1,0 +1,14 @@
+<div *ngIf="datas">
+    <table class="table border">
+        <thead>
+            <tr>
+                <th *ngFor="let data of objectKeys(datas)">{{data}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td *ngFor="let data of objectKeys(datas)">{{datas[data]}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

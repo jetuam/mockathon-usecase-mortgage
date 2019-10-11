@@ -4,15 +4,21 @@
         <div class="row">
             <div class="col-3 pr-0 border-right">
                 <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link active" id="loan-tab" data-toggle="pill" href="#loan" role="tab"
-                        aria-controls="loan" aria-selected="true">Loan Details</a>
+                    <a class="nav-link active" id="loan-tab" data-toggle="pill" href="#profile" role="tab"
+                        aria-controls="loan" aria-selected="true">Profile</a>
+                    <a class="nav-link" id="loan-tab" data-toggle="pill" href="#loan" role="tab" aria-controls="loan"
+                        aria-selected="true">Loan Details</a>
                     <a class="nav-link" id="loan-tab" data-toggle="pill" href="#applyLoan" role="tab"
                         aria-controls="loan" aria-selected="true">Apply Loan</a>
                 </div>
             </div>
             <div class="col-9">
                 <div class="tab-content" id="v-pills-tabContent">
-                    <div class="tab-pane fade show active" id="loan" role="tabpanel" aria-labelledby="loan-tab">
+                    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="loan-tab">
+                        <h4 class="text-muted mb-3">USER PROFILE</h4>
+                        <app-dynamic-table [datas]="profile"></app-dynamic-table>
+                    </div>
+                    <div class="tab-pane fade" id="loan" role="tabpanel" aria-labelledby="loan-tab">
                         <app-loans [loans]="loans"></app-loans>
                     </div>
                     <div class="tab-pane fade" id="applyLoan" role="tabpanel" aria-labelledby="loan-tab">

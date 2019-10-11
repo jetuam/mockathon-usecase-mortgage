@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiDomainUrl: 'http://52.66.201.68:8082/mortgageapp'
+  // apiDomainUrl: 'http://52.66.201.68:8082/mortgageapp'
+  apiDomainUrl: 'http://10.117.189.246:8082/mortgageapp'
 };
 
 /*

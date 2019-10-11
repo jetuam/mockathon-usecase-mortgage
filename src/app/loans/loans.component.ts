@@ -31,7 +31,8 @@ export class LoansComponent implements OnInit {
   onGetLoanDetails() {
     if (this.form.valid) {
       this.loanService.getLoanDetails(this.form.value.loanNo).subscribe(res => {
-        this.loanDetails = res;
+        let r: any = res;
+        this.loanDetails = r.loanDetails;
       });
     }
   }

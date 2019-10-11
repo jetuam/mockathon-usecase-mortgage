@@ -14,6 +14,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AlertComponent } from './core/alert/alert.component';
 import { LoansComponent } from './loans/loans.component';
 import { ApplyLoanComponent } from './apply-loan/apply-loan.component';
+import { DynamicTableComponent } from './core/dynamic-table/dynamic-table.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { ApplyLoanComponent } from './apply-loan/apply-loan.component';
     DashboardComponent,
     AlertComponent,
     LoansComponent,
-    ApplyLoanComponent
+    ApplyLoanComponent,
+    DynamicTableComponent
   ],
   imports: [
     BrowserModule,
